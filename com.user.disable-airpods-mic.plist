@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.user.disable-airpods-mic</string>
+
+  <!-- Run the script whenever the audio system settings plist changes -->
+  <key>WatchPaths</key>
+  <array>
+    <string>/Library/Preferences/Audio/com.apple.audio.SystemSettings.plist</string>
+  </array>
+
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-c</string>
+    <string>
+      for i in {1..50}; do
+        if /opt/homebrew/bin/SwitchAudioSource -t input -c | grep -i airpods; then
+          /opt/homebrew/bin/SwitchAudioSource -t input -s 'BlackHole 2ch' || true
+        fi
+        sleep 0.1
+      done
+    </string>
+  </array>
+
+  <!-- Also run once when the agent is loaded -->
+  <key>RunAtLoad</key>
+  <true/>
+
+  <!-- Optional logging for debugging -->
+  <key>StandardOutPath</key>
+  <string>/tmp/disable-airpods-mic.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/disable-airpods-mic.err</string>
+</dict>
+</plist>
+
+
